@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Raport Mid Test — Madrasah Aliyah (KTSP)</title>
+<style>
+:root{--bg:#f4f7f5;--cd:#fff;--tx:#18261f;--mu:#5f6f67;--pr:#0f6b4f;--pt:#fff;--bd:#d6dfda;--hd:#e7efeb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a16;--cd:#1b2621;--tx:#e6efe9;--mu:#9bb0a5;--pr:#3fb68b;--pt:#06241a;--bd:#2f3f37;--hd:#243229}}
+:root[data-theme="dark"]{--bg:#121a16;--cd:#1b2621;--tx:#e6efe9;--mu:#9bb0a5;--pr:#3fb68b;--pt:#06241a;--bd:#2f3f37;--hd:#243229}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 16px;background:var(--cd);border-bottom:1px solid var(--bd)}
+nav{display:flex;gap:4px;overflow-x:auto;padding:8px 12px;background:var(--cd);border-bottom:1px solid var(--bd)}
+nav a{padding:6px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;color:var(--mu)}
+nav a.on{background:var(--pr);color:var(--pt)}
+main{max-width:1000px;margin:0 auto;padding:16px}
+h2{margin:4px 0 12px;font-size:20px}
+.card{background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0}
+.sp{flex:1}.mu,.mut{color:var(--mu)}small{color:var(--mu)}
+input,select,textarea,button{font:inherit;color:inherit;border:1px solid var(--bd);border-radius:8px;padding:7px 10px;background:var(--bg)}
+textarea{width:100%}
+button{background:var(--pr);color:var(--pt);border-color:var(--pr);cursor:pointer}
+button.g{background:transparent;color:var(--tx);border-color:var(--bd)}
+table{border-collapse:collapse;width:100%}
+th,td{border-bottom:1px solid var(--bd);padding:4px 6px;text-align:left;vertical-align:middle}
+th{background:var(--hd);font-size:13px}
+td input{width:100%;min-width:90px;padding:5px 7px}
+td input.n,input.n{width:70px;min-width:0}
+.scroll{overflow-x:auto}
+.badge{font-size:12px;padding:1px 8px;border-radius:99px;background:var(--hd)}
+.chip{background:var(--hd);padding:3px 10px;border-radius:99px;font-size:13px}.chip a{cursor:pointer;margin-left:6px}
+.ur{border-bottom:1px solid var(--bd);padding:8px 0}
+.box{max-width:380px;margin:12vh auto;padding:0 16px}.box input{width:100%;margin:5px 0}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#222;color:#fff;padding:8px 16px;border-radius:8px;display:none;z-index:9}
+.rp{background:#fff;color:#000;border:1px solid #bbb;margin:0 auto 16px;padding:24px;max-width:800px;font-size:12px}
+.rp h3,.rp h4{margin:0;text-align:center}.rp h4{font-size:12px;margin:2px 0 10px}
+.rp table td,.rp table th{border:1px solid #444;text-align:center;padding:3px 5px;background:#fff;color:#000}
+.rp td.l{text-align:left}.rp .gh{text-align:left;font-weight:700;background:#eee}
+.rp .id td{border:0;text-align:left;padding:1px 4px}
+.rp .ttd{display:flex;justify-content:space-between;margin-top:18px;text-align:center}
+.rp .ttd div{width:32%}.rp .kp{height:56px}
+@media print{@page{size:A4;margin:12mm}.np{display:none!important}body{background:#fff}main{padding:0;max-width:none}.rp{border:0;margin:0;padding:0;max-width:none;page-break-after:always}}
+</style></head>
+<body>
+<div id="app"><p style="padding:20px">Memuat…</p></div><div id="toast"></div>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* ====== KONFIGURASI: tempel URL Web App Apps Script di bawah ini ====== */
+const API_URL="https://script.google.com/macros/s/AKfycbxS_bAGzDD78F8Q1_u6BCiph_J8IpVAPnCwI8pnyw1hS8emqDqzWjNkDR7MxHiVWjpMYA/exec";
+/* ======================================================================= */
+let ready=0,me=null,meId='',view='nilai',sel='',fk='',kr='',ks='',has=true,TOKEN='';
+try{TOKEN=sessionStorage.getItem('t')||''}catch{}
+const S={users:[],siswa:[],mapel:[],nilai:{},cfg:{},wali:{}};
+const KL={A:'Kelompok A',B:'Kelompok B',C:'Kelompok C (Peminatan)',M:'Muatan Lokal'},W={t:.3,u:.3,m:.4};
+const hit=n=>{let s=0,w=0;for(const k in W){const v=n?.[k];if(v!=null&&v!==''&&!isNaN(v)){s+=W[k]*v;w+=W[k]}}return w?Math.round(s/w):null};
+const pred=v=>v==null?'-':v>=90?'A':v>=80?'B':v>=70?'C':'D';
+const nm=(a,b)=>(a.nama||'').localeCompare(b.nama||''),kelas=()=>[...new Set(S.siswa.map(s=>s.kelas).filter(Boolean))].sort(),mp=id=>S.mapel.find(m=>m.id===id);
+const val=id=>$('#'+id).value.trim();
+async function api(a,p={}){
+ if(API_URL.startsWith('GANTI'))throw new Error('API_URL belum diisi di index.html');
+ const r=await fetch(API_URL,{method:'POST',body:JSON.stringify({a,t:TOKEN,...p})}),j=await r.json();
+ if(!j.ok){if(/Sesi/.test(j.err||''))logout();throw new Error(j.err)}return j}
+const W1=async(op,c,id,d)=>{await api(op,{c,id,d});if(c!=='nilai')await load()};
+const col=n=>({doc:id=>({set:d=>W1('set',n,id,d),update:d=>W1('update',n,id,d),delete:()=>W1('delete',n,id)}),add:d=>W1('add',n,null,d)});
+const setTok=t=>{TOKEN=t;try{sessionStorage.setItem('t',t)}catch{}};
+const toast=t=>{const e=$('#toast');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',3500)};
+const run=async f=>{try{await f()}catch(e){toast('Gagal: '+(e.message||e.code||e))}};
+async function sha(p,u){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(u+':'+p));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+async function load(){const j=await api('all'),D=j.data;
+ S.users=D.users;S.siswa=D.siswa;S.mapel=D.mapel;S.nilai={};D.nilai.forEach(x=>S.nilai[x.id]=x);
+ S.cfg={...(D.cfg.find(x=>x.id==='main')||{})};S.wali={...(D.cfg.find(x=>x.id==='wali')||{})};delete S.wali.id;
+ meId=j.me;ready=1;render()}
+(async()=>{try{if(TOKEN)return await load()}catch{TOKEN=''}
+ try{has=(await api('status')).has;render()}catch(e){$('#app').innerHTML=`<div class=box><b>Tidak dapat terhubung ke server.</b><p class=mu>${esc(e.message)}</p></div>`}})();
+
+function render(){
+ if(!TOKEN)return has?login():setup();
+ me=S.users.find(u=>u.id===meId);if(!me)return;
+ shell()}
+function setup(){$('#app').innerHTML=`<div class=box><h2>Pengaturan awal</h2><p class=mu>Buat akun admin pertama.</p><input id=an placeholder="Nama lengkap"><input id=au placeholder="Username (huruf kecil/angka)"><input id=ap type=password placeholder="Password (min. 6 karakter)"><button onclick="mkAdmin()">Buat akun admin</button></div>`}
+async function mkAdmin(){const n=val('an'),u=val('au').toLowerCase(),p=$('#ap').value;
+ if(!n||!/^[a-z0-9_-]{3,}$/.test(u)||p.length<6)return toast('Isi nama, username (min. 3 huruf/angka), dan password min. 6 karakter');
+ run(async()=>{const j=await api('setup',{u,n,h:await sha(p,u)});setTok(j.t);await load()})}
+function login(){$('#app').innerHTML=`<div class=box><h2>Masuk</h2><p class=mu>Raport Mid Test — Madrasah Aliyah (KTSP)</p><input id=lu placeholder=Username autocomplete=username><input id=lp type=password placeholder=Password autocomplete=current-password onkeydown="if(event.key==='Enter')doLogin()"><button onclick="doLogin()">Masuk</button></div>`}
+function doLogin(){const u=val('lu').toLowerCase();run(async()=>{const j=await api('login',{u,h:await sha($('#lp').value,u)});setTok(j.t);await load()})}
+function logout(){TOKEN='';meId='';ready=0;S.users=[];has=true;try{sessionStorage.removeItem('t')}catch{}render()}
+function shell(){const adm=me.role==='admin';
+ const T=adm?[['raport','Raport'],['nilai','Input Nilai'],['siswa','Siswa'],['mapel','Mapel'],['guru','Pengguna'],['cfg','Pengaturan'],['akun','Akun']]:[['nilai','Input Nilai'],['akun','Akun']];
+ if(!T.some(t=>t[0]===view))view=T[0][0];
+ $('#app').innerHTML=`<header class=np><div><b>Raport Mid Test</b> <small>MA · KTSP</small></div><div>${esc(me.nama)} <span class=badge>${me.role}</span> <button class=g onclick="logout()">Keluar</button></div></header><nav class=np>${T.map(t=>`<a class="${t[0]===view?'on':''}" onclick="view='${t[0]}';render()">${t[1]}</a>`).join('')}</nav><main>${V[view]()}</main>`}
+const V={};
+
+V.nilai=()=>{const adm=me.role==='admin';
+ const o=adm?kelas().flatMap(k=>S.mapel.map(m=>({v:m.id+'|'+k,l:m.nama+' — '+k}))):(me.mengajar||[]).filter(a=>mp(a.m)).map(a=>({v:a.m+'|'+a.k,l:mp(a.m).nama+' — '+a.k}));
+ if(!o.some(x=>x.v===sel))sel=o[0]?.v||'';
+ if(!o.length)return`<div class=card>${adm?'Tambahkan siswa dan mata pelajaran terlebih dahulu.':'Belum ada mata pelajaran yang ditugaskan kepada Anda. Hubungi admin.'}</div>`;
+ const i=sel.indexOf('|'),m=mp(sel.slice(0,i)),k=sel.slice(i+1),rows=S.siswa.filter(s=>s.kelas===k).sort(nm);
+ return`<h2>Input Nilai Mid Test</h2><div class=card><select onchange="sel=this.value;render()">${o.map(x=>`<option value="${esc(x.v)}" ${x.v===sel?'selected':''}>${esc(x.l)}</option>`).join('')}</select>
+ <p class=mu>Nilai = Tugas 30% + Ulangan Harian 30% + Mid Test 40%. KKM ${m.kkm}. Tersimpan otomatis.</p><div class=scroll><table><tr><th>No</th><th>Nama</th><th>NISN</th><th>Tugas</th><th>UH</th><th>Mid</th><th>Nilai</th><th>Predikat</th></tr>
+ ${rows.map((s,j)=>{const n=S.nilai[s.id+'_'+m.id]||{},v=hit(n);return`<tr><td>${j+1}</td><td>${esc(s.nama)}</td><td>${esc(s.nisn)}</td>${['t','u','m'].map(f=>`<td><input class=n type=number min=0 max=100 value="${n[f]??''}" onchange="setN('${s.id}','${m.id}','${f}',this)"></td>`).join('')}<td id="v${s.id}"><b>${v??'-'}</b></td><td id="p${s.id}">${pred(v)}</td></tr>`}).join('')||'<tr><td colspan=8>Belum ada siswa di kelas ini.</td></tr>'}</table></div></div>`};
+function setN(sid,mid,f,el){const v=el.value===''?null:Math.max(0,Math.min(100,+el.value));el.value=v??'';
+ const key=sid+'_'+mid,n=S.nilai[key]={...S.nilai[key],[f]:v},h=hit(n);
+ $('#v'+sid).innerHTML='<b>'+(h??'-')+'</b>';$('#p'+sid).textContent=pred(h);
+ run(()=>col('nilai').doc(key).set({sid,mid,t:n.t??null,u:n.u??null,m:n.m??null}))}
+
+V.siswa=()=>{const ls=kelas(),rows=S.siswa.filter(s=>!fk||s.kelas===fk).sort((a,b)=>(a.kelas||'').localeCompare(b.kelas||'')||nm(a,b));
+ return`<h2>Data Siswa</h2><div class=card><b>Tambah siswa</b><div class=row><input id=sn placeholder="Nama lengkap"><input id=sp placeholder=NISN><input id=sk placeholder="Kelas (mis. X IPA 1)" list=kl><button onclick="addS()">Tambah</button></div><datalist id=kl>${ls.map(k=>`<option>${esc(k)}`).join('')}</datalist>
+ <details><summary>Impor banyak siswa</summary><p class=mu>Satu baris per siswa: nama;NISN;kelas</p><textarea id=bulk rows=5></textarea><div><button onclick="bulkS()">Impor</button></div></details></div>
+ <div class=card><div class=row><select onchange="fk=this.value;render()"><option value="">Semua kelas</option>${ls.map(k=>`<option ${k===fk?'selected':''}>${esc(k)}</option>`).join('')}</select><span class=mu>${rows.length} siswa · S/I/A = sakit/izin/alpa</span></div>
+ <div class=scroll><table><tr><th>Nama</th><th>NISN</th><th>Kelas</th><th>S</th><th>I</th><th>A</th><th></th></tr>${rows.map(s=>`<tr>${['nama','nisn','kelas'].map(f=>`<td><input value="${esc(s[f])}" onchange="upS('${s.id}','${f}',this.value.trim())"></td>`).join('')}${['s','i','a'].map(f=>`<td><input class=n type=number min=0 value="${s[f]??0}" onchange="upS('${s.id}','${f}',+this.value)"></td>`).join('')}<td><button class=g onclick="delS('${s.id}')">Hapus</button></td></tr>`).join('')}</table></div></div>`};
+const addS=()=>{const nama=val('sn'),nisn=val('sp'),kelas=val('sk');if(!nama||!kelas)return toast('Nama dan kelas wajib diisi');run(()=>col('siswa').add({nama,nisn,kelas,s:0,i:0,a:0}))};
+const bulkS=()=>run(async()=>{const L=$('#bulk').value.split('\n').map(l=>l.split(';').map(x=>x.trim())).filter(a=>a[0]&&a[2]);await api('batch',{ops:L.map(a=>({op:'add',c:'siswa',d:{nama:a[0],nisn:a[1]||'',kelas:a[2],s:0,i:0,a:0}}))});await load();toast(L.length+' siswa diimpor')});
+const upS=(id,f,v)=>run(()=>col('siswa').doc(id).update({[f]:v}));
+const delS=id=>confirm('Hapus siswa beserta nilainya?')&&run(async()=>{await api('batch',{ops:[...S.mapel.map(m=>({op:'delete',c:'nilai',id:id+'_'+m.id})),{op:'delete',c:'siswa',id}]});await load()});
+
+V.mapel=()=>`<h2>Mata Pelajaran</h2><div class=card><b>Tambah mata pelajaran</b><div class=row><input id=mn placeholder="Nama mata pelajaran"><select id=mk>${Object.entries(KL).map(([k,v])=>`<option value=${k}>${v}`).join('')}</select><input id=mm class=n type=number value=70 title=KKM><button onclick="addM()">Tambah</button></div><button class=g onclick="seedM()">Muat mapel standar MA</button></div>
+ <div class=card><div class=scroll><table><tr><th>Nama</th><th>Kelompok</th><th>KKM</th><th></th></tr>${[...S.mapel].sort((a,b)=>(a.kel||'A').localeCompare(b.kel||'A')||a.nama.localeCompare(b.nama)).map(m=>`<tr><td><input value="${esc(m.nama)}" onchange="upM('${m.id}','nama',this.value.trim())"></td><td><select onchange="upM('${m.id}','kel',this.value)">${Object.entries(KL).map(([k,v])=>`<option value=${k} ${k===(m.kel||'A')?'selected':''}>${v}`).join('')}</select></td><td><input class=n type=number value="${m.kkm}" onchange="upM('${m.id}','kkm',+this.value)"></td><td><button class=g onclick="delM('${m.id}')">Hapus</button></td></tr>`).join('')}</table></div></div>`;
+const addM=()=>{const nama=val('mn');if(!nama)return;run(()=>col('mapel').add({nama,kel:$('#mk').value,kkm:+$('#mm').value||70}))};
+const upM=(id,f,v)=>run(()=>col('mapel').doc(id).update({[f]:v}));
+const delM=id=>confirm('Hapus mata pelajaran?')&&run(()=>col('mapel').doc(id).delete());
+const seedM=()=>run(async()=>{const D={A:['Al-Qur\'an Hadis','Akidah Akhlak','Fikih','Sejarah Kebudayaan Islam','Pendidikan Kewarganegaraan','Bahasa Indonesia','Bahasa Arab','Matematika','Sejarah Indonesia','Bahasa Inggris'],B:['Seni Budaya','Pendidikan Jasmani, Olahraga dan Kesehatan','Prakarya dan Kewirausahaan']};
+ const ops=[];for(const k in D)D[k].forEach(n=>{if(!S.mapel.some(m=>m.nama===n))ops.push({op:'add',c:'mapel',d:{nama:n,kel:k,kkm:70}})});if(ops.length)await api('batch',{ops});await load();toast(ops.length+' mapel ditambahkan')});
+
+V.guru=()=>`<h2>Pengguna</h2><div class=card><b>Tambah pengguna</b><div class=row><input id=gn placeholder="Nama lengkap"><input id=gu placeholder=Username><input id=gp placeholder=Password><select id=gr><option value=guru>Guru<option value=admin>Admin</select><button onclick="addU()">Tambah</button></div></div>
+ <datalist id=kl>${kelas().map(k=>`<option>${esc(k)}`).join('')}</datalist><div class=card>${[...S.users].sort(nm).map(u=>`<div class=ur><div class=row><b>${esc(u.nama)}</b><span class=mu>@${u.id}</span><span class=badge>${u.role}</span><span class=sp></span><button class=g onclick="rpw('${u.id}')">Reset password</button>${u.id!==me.id?`<button class=g onclick="delU('${u.id}')">Hapus</button>`:''}</div>
+ ${u.role==='guru'?`<div class=row>${(u.mengajar||[]).map((a,j)=>`<span class=chip>${esc(mp(a.m)?.nama||'?')} — ${esc(a.k)}<a onclick="delA('${u.id}',${j})">×</a></span>`).join('')||'<span class=mu>Belum ada penugasan</span>'}</div><div class=row><select id="am${u.id}">${S.mapel.map(m=>`<option value="${m.id}">${esc(m.nama)}`).join('')}</select><input id="ak${u.id}" placeholder="Kelas" list=kl><button class=g onclick="addA('${u.id}')">+ Tugaskan</button></div>`:''}</div>`).join('')}</div>`;
+const addU=()=>{const n=val('gn'),u=val('gu').toLowerCase(),p=$('#gp').value;if(!n||!/^[a-z0-9_-]{3,}$/.test(u)||p.length<6)return toast('Nama, username (min. 3 huruf/angka) dan password (min. 6) wajib');if(S.users.some(x=>x.id===u))return toast('Username sudah dipakai');
+ run(async()=>col('users').doc(u).set({nama:n,role:$('#gr').value,h:await sha(p,u),mengajar:[]}))};
+const rpw=id=>{const p=prompt('Password baru untuk @'+id+' (min. 6 karakter):');if(p&&p.length>=6)run(async()=>col('users').doc(id).update({h:await sha(p,id)}));else if(p)toast('Minimal 6 karakter')};
+const delU=id=>confirm('Hapus pengguna @'+id+'?')&&run(()=>col('users').doc(id).delete());
+const addA=id=>{const m=$('#am'+id).value,k=val('ak'+id);if(!m||!k)return toast('Pilih mapel dan isi kelas');const u=S.users.find(x=>x.id===id);run(()=>col('users').doc(id).update({mengajar:[...(u.mengajar||[]),{m,k}]}))};
+const delA=(id,j)=>{const u=S.users.find(x=>x.id===id);run(()=>col('users').doc(id).update({mengajar:(u.mengajar||[]).filter((_,i)=>i!==j)}))};
+
+const CF=[['nama','Nama madrasah'],['npsn','NSM / NPSN'],['alamat','Alamat'],['kota','Kota (untuk tanggal cetak)'],['ta','Tahun ajaran (mis. 2026/2027)'],['kepala','Nama kepala madrasah'],['nip','NIP kepala madrasah']];
+V.cfg=()=>`<h2>Pengaturan</h2><div class=card>${CF.map(([k,l])=>`<div class=row><label style="width:230px">${l}</label><input id="c_${k}" value="${esc(S.cfg[k])}" style="flex:1" onchange="saveCfg()"></div>`).join('')}<div class=row><label style="width:230px">Semester</label><select id=c_sem onchange="saveCfg()"><option ${S.cfg.sem==='Ganjil'?'selected':''}>Ganjil<option ${S.cfg.sem==='Genap'?'selected':''}>Genap</select></div><p class=mu>Tersimpan otomatis.</p></div>`;
+const saveCfg=()=>{const o={sem:$('#c_sem').value};CF.forEach(([k])=>o[k]=val('c_'+k));run(()=>col('cfg').doc('main').set(o))};
+
+V.akun=()=>`<h2>Akun</h2><div class=card><b>Ganti password</b><div class=row><input id=po type=password placeholder="Password lama"><input id=pn type=password placeholder="Password baru (min. 6)"><button onclick="chPw()">Simpan</button></div></div>`;
+const chPw=()=>run(async()=>{const n=$('#pn').value;if(n.length<6)return toast('Minimal 6 karakter');await api('chpw',{o:await sha($('#po').value,me.id),n:await sha(n,me.id)});toast('Password diganti');$('#po').value=$('#pn').value=''});
+
+V.raport=()=>{const ls=kelas();if(!ls.length)return'<div class=card>Belum ada data siswa.</div>';if(!ls.includes(kr))kr=ls[0];
+ const sis=S.siswa.filter(s=>s.kelas===kr).sort(nm);if(ks&&!sis.some(s=>s.id===ks))ks='';const w=S.wali[kr]||{};
+ const mps=S.mapel.filter(m=>sis.some(s=>S.nilai[s.id+'_'+m.id])).sort((a,b)=>(a.kel||'A').localeCompare(b.kel||'A')||a.nama.localeCompare(b.nama));
+ const av={};sis.forEach(s=>{const v=mps.map(m=>hit(S.nilai[s.id+'_'+m.id])).filter(x=>x!=null);av[s.id]=v.length?v.reduce((a,b)=>a+b,0)/v.length:null});
+ const rk=sis.filter(s=>av[s.id]!=null).sort((a,b)=>av[b.id]-av[a.id]).map(s=>s.id);
+ return`<div class="card np"><h2>Cetak Raport</h2><div class=row><select onchange="kr=this.value;ks='';render()">${ls.map(k=>`<option ${k===kr?'selected':''}>${esc(k)}`).join('')}</select><select onchange="ks=this.value;render()"><option value="">Semua siswa</option>${sis.map(s=>`<option value="${s.id}" ${s.id===ks?'selected':''}>${esc(s.nama)}`).join('')}</select><button onclick="window.print()">Cetak / Simpan PDF</button></div>
+ <div class=row><input id=wn placeholder="Nama wali kelas" value="${esc(w.n)}" onchange="saveW()"><input id=wp placeholder="NIP wali kelas" value="${esc(w.p)}" onchange="saveW()"></div><p class=mu>Hanya mata pelajaran yang sudah memiliki nilai yang ditampilkan.</p></div>`
+ +(ks?sis.filter(s=>s.id===ks):sis).map(s=>rapor(s,mps,av,rk,sis.length)).join('')};
+const saveW=()=>{const o={...S.wali,[kr]:{n:val('wn'),p:val('wp')}};S.wali=o;run(()=>col('cfg').doc('wali').set(o))};
+function rapor(s,mps,av,rk,N){const c=S.cfg,g=S.wali[s.kelas]||{};let last='',no=0,tot=0;
+ const body=mps.map(m=>{const n=S.nilai[s.id+'_'+m.id]||{},v=hit(n),kl=m.kel||'A';if(v!=null)tot+=v;let h='';if(kl!==last){last=kl;h=`<tr><td colspan=9 class=gh>${KL[kl]||''}</td></tr>`}no++;
+  return h+`<tr><td>${no}</td><td class=l>${esc(m.nama)}</td><td>${m.kkm}</td><td>${n.t??'-'}</td><td>${n.u??'-'}</td><td>${n.m??'-'}</td><td><b>${v??'-'}</b></td><td>${pred(v)}</td><td>${v==null?'-':v>=m.kkm?'Tuntas':'Belum tuntas'}</td></tr>`}).join('');
+ const r=rk.indexOf(s.id)+1,tg=new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+ return`<section class=rp><h3>${esc((c.nama||'NAMA MADRASAH').toUpperCase())}</h3><div style="text-align:center">${esc(c.npsn?'NSM/NPSN: '+c.npsn+' · ':'')}${esc(c.alamat)}</div><hr><h3>LAPORAN HASIL MID TEST SEMESTER ${esc((c.sem||'Ganjil').toUpperCase())}</h3><h4>Kurikulum KTSP · Tahun Ajaran ${esc(c.ta)}</h4>
+ <table class=id><tr><td width=18%>Nama Siswa</td><td width=42%>: ${esc(s.nama)}</td><td width=16%>Kelas</td><td>: ${esc(s.kelas)}</td></tr><tr><td>NISN</td><td>: ${esc(s.nisn)}</td><td>Semester</td><td>: ${esc(c.sem||'Ganjil')}</td></tr></table>
+ <table style="margin-top:8px"><tr><th>No</th><th>Mata Pelajaran</th><th>KKM</th><th>Tugas</th><th>UH</th><th>Mid Test</th><th>Nilai</th><th>Predikat</th><th>Keterangan</th></tr>${body}<tr><td colspan=6 class=l><b>Jumlah Nilai</b></td><td colspan=3><b>${tot}</b></td></tr><tr><td colspan=6 class=l><b>Rata-rata</b></td><td colspan=3><b>${av[s.id]==null?'-':av[s.id].toFixed(2)}</b></td></tr><tr><td colspan=6 class=l><b>Peringkat di kelas</b></td><td colspan=3><b>${r?r+' dari '+N+' siswa':'-'}</b></td></tr></table>
+ <table style="width:50%;margin-top:8px"><tr><th colspan=2>Ketidakhadiran</th></tr><tr><td class=l>Sakit</td><td>${s.s||0} hari</td></tr><tr><td class=l>Izin</td><td>${s.i||0} hari</td></tr><tr><td class=l>Tanpa keterangan</td><td>${s.a||0} hari</td></tr></table>
+ <p style="font-size:11px">Predikat: A (90–100) Sangat Baik · B (80–89) Baik · C (70–79) Cukup · D (&lt;70) Kurang</p>
+ <div style="text-align:right">${esc(c.kota)}, ${tg}</div><div class=ttd><div>Orang Tua/Wali<div class=kp></div>(.....................)</div><div>Wali Kelas<div class=kp></div><u>${esc(g.n||'.....................')}</u><br>${g.p?'NIP. '+esc(g.p):''}</div><div>Kepala Madrasah<div class=kp></div><u>${esc(c.kepala||'.....................')}</u><br>${c.nip?'NIP. '+esc(c.nip):''}</div></div></section>`}
+</script></body></html>
